@@ -1,32 +1,38 @@
 import re
+from typing import Callable
 from utils.loger import log
 
 text = "Загальний дохід працівника складається з декількох частин: 1000.01 як основний дохід, доповнений додатковими надходженнями 27.45 і 324.00 доларів."
+# text = "Загальний дохід 1 працівника складається з декількох частин: 1."
 # text = "Загальний дохід працівника складається з декількох частин: 1000.01"
 
 
-def fun(text: str):
+def generator_numbers(text: str):
 
-    if type(text) != str:
-        log("Argument isn't a string")
-        return
+    pattern = r"\b\d+(?:\.\d+)?\b"
+    numbers = re.findall(pattern, text)
 
-    pattern = r"\b\d+[.]\d+\b"
-    search = re.findall(pattern, text)
-
-    if len(search) <= 1:
+    if len(numbers) == 0:
         log(
             "We need more numbers in the text",
             "warning",
         )
         return
 
-    search = [float(num) for num in search]
+    for num in numbers:
+        yield float(num)
 
-    return search
+
+def sum_profit(text: str, func: Callable):
+    if type(text) != str:
+        log("Argument isn't a string")
+        return
+    else:
+        return sum(func(text))
 
 
-log(fun(text))
+total_income = sum_profit(text, generator_numbers)
+log(total_income)
 
 
 """
