@@ -1,26 +1,38 @@
-def add_contact(name: str, phone: str, contacts: dict):
+from decorators.error_handlers import input_error
+
+
+@input_error
+def add_contact(args, contacts: dict):
+    name, phone = args
     contacts[name] = phone
-    print(f"Contact {name} added!")
+    return f"Contact {name} added!"
 
 
-def change_contact(name: str, phone: str, contacts: dict):
+@input_error
+def change_contact(args, contacts: dict):
+    name, phone = args
     if name in contacts:
         contacts[name] = phone
-        print(f"Contact {name} updated!")
+        return f"Contact {name} updated!"
     else:
-        print("Contact not found!")
+        raise KeyError
 
 
-def show_phone(name: str, contacts: dict):
+@input_error
+def show_phone(args, contacts: dict):
+    if not contacts:
+        return "Contact list is empty!"
+
+    name = args[0]
     if name in contacts:
-        print(f"{name}: {contacts[name]}")
+        return f"{name}: {contacts[name]}"
     else:
-        print("Contact not found!")
+        raise KeyError
 
 
-def show_all(contacts: dict):
+@input_error
+def show_all(_, contacts):
     if contacts:
-        for name, phone in contacts.items():
-            print(f"{name}: {phone}")
+        return "\n".join([f"{name}: {phone}" for name, phone in contacts.items()])
     else:
-        print("No contacts found.")
+        return "Your list is empty!"

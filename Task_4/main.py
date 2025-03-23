@@ -10,17 +10,21 @@ def parse_input(inputted_data: str):
 
 
 def handler_input(command_list: list[str]):
-    match command_list:
-        case ["add", name, phone]:
-            add_contact(name, phone, contacts)
-        case ["change", name, phone]:
-            change_contact(name, phone, contacts)
-        case ["show", name]:
-            show_phone(name, contacts)
-        case ["all"]:
-            show_all(contacts)
-        case _:
-            print("Invalid command!")
+    try:
+        command, *args = command_list
+        match command:
+            case "add":
+                return add_contact(args, contacts)
+            case "change":
+                return change_contact(args, contacts)
+            case "show":
+                return show_phone(args, contacts)
+            case "all":
+                return show_all(args, contacts)
+            case _:
+                return "Invalid command!"
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 
 def main():
@@ -36,7 +40,8 @@ def main():
         elif command == ["hello"]:
             print("How can I help you?")
         else:
-            handler_input(command)
+            response = handler_input(command)
+            print(response)
 
 
 if __name__ == "__main__":
